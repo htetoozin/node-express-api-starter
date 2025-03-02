@@ -1,10 +1,8 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import { getUsers } from "../../controllers/userController";
 
 const router = Router();
 
-router.get("/users", (req: Request, res: Response) => {
-  console.log(req);
-  res.json({ message: "Hello Users!" });
-});
+router.get("/users", getUsers);
 
 export default router;

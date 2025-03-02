@@ -1,6 +1,6 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import dotenv from "dotenv";
-import userRoute from "./routes/api/user";
+import apiRoute from "./routes/api";
 import welcomeRoute from "./routes/welcome";
 
 dotenv.config();
@@ -8,8 +8,8 @@ dotenv.config();
 const app: Express = express();
 
 app.use(express.json());
-app.use(welcomeRoute);
 
-app.use(userRoute);
+app.use("/api", apiRoute);
+app.use(welcomeRoute);
 
 export default app;
