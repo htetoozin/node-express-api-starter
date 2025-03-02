@@ -1,13 +1,14 @@
 import express, { Express, Request, Response } from "express";
-import userRoute from "./routes/user";
+import dotenv from "dotenv";
+import userRoute from "./routes/api/user";
+import welcomeRoute from "./routes/welcome";
+
+dotenv.config();
 
 const app: Express = express();
 
 app.use(express.json());
-
-app.get("/", (req: Request, res: Response) => {
-  res.json({ message: "Hello Plar with Node.js!" });
-});
+app.use(welcomeRoute);
 
 app.use(userRoute);
 
