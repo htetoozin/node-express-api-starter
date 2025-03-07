@@ -1,14 +1,12 @@
-const dotenv = require("dotenv");
-
-dotenv.config();
+const { env } = require("./app/utils");
 
 module.exports = {
   client: "mysql2",
   connection: {
-    host: process.env.DB_HOST || "127.0.0.1",
-    database: process.env.DB_NAME || "node_ts",
-    user: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || "",
+    host: env("DB_HOST", "127.0.0.1"),
+    database: env("DB_NAME", "node_ts"),
+    user: env("DB_USERNAME", "root"),
+    password: env("DB_PASSWORD", ""),
   },
   migrations: {
     table: "migrations",
