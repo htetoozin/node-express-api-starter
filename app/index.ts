@@ -4,7 +4,6 @@ import morgan from "morgan";
 
 import { db } from "./config/database";
 
-//routes
 import apiRoute from "./routes/api";
 import welcomeRoute from "./routes/welcome";
 
@@ -22,6 +21,7 @@ db.connection();
 
 app.use(express.json());
 
+//Routes
 app.use("/api", apiRoute);
 app.use(welcomeRoute);
 
