@@ -1,10 +1,12 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
+import morgan from "morgan";
 
+import { db } from "./config/database";
+
+//routes
 import apiRoute from "./routes/api";
 import welcomeRoute from "./routes/welcome";
-
-const morgan = require("morgan");
 
 dotenv.config();
 
@@ -14,6 +16,9 @@ const app: Express = express();
 if (process.env.APP_ENV === "development") {
   app.use(morgan("dev"));
 }
+
+//Database connection
+db.connection();
 
 app.use(express.json());
 

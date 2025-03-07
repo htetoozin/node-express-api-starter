@@ -18,8 +18,13 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "morgan": "^1.10.0",
+    "mysql2": "^3.13.0",
     "nodemon": "^3.1.9",
+    "sutando": "^1.7.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
+  },
+  "devDependencies": {
+    "@types/morgan": "^1.9.9"
   }
 }
