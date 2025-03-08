@@ -1,13 +1,14 @@
 import { Model } from "sutando";
 
-// interface UserType {
-//   id: number;
-//   name: string;
-//   email: string;
-//   role_id: number;
-//   created_at?: Date;
-//   updated_at?: Date;
-// }
+export interface UserType {
+  id?: number;
+  name: string;
+  email: string;
+  role_id: number;
+  password: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
 
 class User extends Model {
   declare id: number;

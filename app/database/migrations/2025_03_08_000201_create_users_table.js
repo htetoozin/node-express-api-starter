@@ -10,7 +10,8 @@ module.exports = class extends Migration {
         table.increments("id");
         table.string("name");
         table.string("email").unique();
-        table.integer("role_id");
+        table.string("password", 6);
+        table.integer("role_id").default(1);
         table.timestamps();
       });
     }

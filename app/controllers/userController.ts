@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import User from "../models/userModel";
+import User, { UserType } from "../models/userModel";
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -30,6 +30,30 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Unknown error occurred",
+    });
+  }
+};
+
+export const createUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { name, email, password } = req.body;
+    const user = await User.query().create({
+      name,
+      email,
+      password,
+    });
+    res.status(201).json({
       success: true,
       data: user,
     });

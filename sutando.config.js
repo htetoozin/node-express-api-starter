@@ -1,4 +1,4 @@
-const { env } = require("./app/utils");
+const { env } = require("./dist/app/utils");
 
 module.exports = {
   client: "mysql2",
