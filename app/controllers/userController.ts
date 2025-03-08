@@ -3,10 +3,11 @@ import User from "../models/userModel";
 import validatorMiddleware from "../middlewares/validatorMiddleware";
 import { createUserValidator } from "../validators/userValidator";
 import asyncHandler from "../middlewares/asyncHandlerMiddleware";
+import { StatusCode } from "../enums/statusCode";
 
 export const getUsers = asyncHandler(async (req: Request, res: Response) => {
   const users = await User.query().paginate();
-  res.status(200).json({
+  res.status(StatusCode.OK).json({
     success: true,
     data: users,
   });
