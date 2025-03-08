@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const createUserValidation = z
+export const createUserValidator = z
   .object({
     name: z.string({
       required_error: "Name is required",
@@ -18,7 +18,7 @@ export const createUserValidation = z
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: "Passwords do not match",
-    path: ["confirmPassword"],
+    path: ["password_confirmation"],
   });
 
-export type CreateUserInput = z.infer<typeof createUserValidation>;
+export type CreateUserInput = z.infer<typeof createUserValidator>;

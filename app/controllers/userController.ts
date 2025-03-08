@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import User, { UserType } from "../models/userModel";
-import { createUserValidation } from "../validation/userValidation";
+import User from "../models/userModel";
+import validatorMiddleware from "../middlewares/validatorMiddleware";
+import { createUserValidator } from "../validators/userValidator";
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -48,16 +49,22 @@ export const createUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    const data = createUserValidation.safeParse(req.body);
-    if (!data.success) {
+    const { success, data, errors } = await validatorMiddleware(
+      createUserValidator,
+      req.body
+    );
+
+    if (!success) {
       res.status(400).json({
         success: false,
         message: "Invalid data",
-        errors: data.error.errors,
+        errors,
       });
       return;
     }
-    const { name, email, password } = req.body;
+
+    const { name, email, password } = data;
+
     const user = await User.query().create({
       name,
       email,

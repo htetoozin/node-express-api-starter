@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createUser = exports.getUser = exports.getUsers = void 0;
 const userModel_1 = __importDefault(require("../models/userModel"));
+const userValidation_1 = require("../validation/userValidation");
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield userModel_1.default.query().paginate();
@@ -56,9 +57,17 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getUser = getUser;
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const data = userValidation_1.createUserValidation.safeParse(req.body);
+        if (!data.success) {
+            res.status(400).json({
+                success: false,
+                message: "Invalid data",
+                errors: data.error.errors,
+            });
+            return;
+        }
         const { name, email, password } = req.body;
-        console.log(req.body, "req body");
-        const user = yield userModel_1.default.query().insert({
+        const user = yield userModel_1.default.query().create({
             name,
             email,
             password,
