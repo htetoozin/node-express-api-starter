@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import { env, responseError } from "../utils";
+import { StatusCode } from "../enums/statusCode";
 
 const errorHandler = (
   err: any,
@@ -6,23 +8,13 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  err.statusCode = err.statusCode || 500;
+  err.statusCode = err.statusCode || StatusCode.INTERNAL_SERVER_ERROR;
   err.status = err.status || "error";
 
-  if (process.env.NODE_ENV === "development") {
-    res.status(err.statusCode).json({
-      success: false,
-      status: err.status,
-      message: err.message,
-      stack: err.stack,
-    });
-  } else {
-    res.status(err.statusCode).json({
-      success: false,
-      status: err.status,
-      message: err.message,
-    });
+  if (env("NODE_ENV") === "development") {
+    next(responseError(res, err.message, err.statusCode, err.stack));
   }
+  next(responseError(res, err.message, err.statusCode));
 };
 
 export default errorHandler;

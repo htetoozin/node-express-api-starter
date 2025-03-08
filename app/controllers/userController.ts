@@ -4,31 +4,31 @@ import validatorMiddleware from "../middlewares/validatorMiddleware";
 import { createUserValidator } from "../validators/userValidator";
 import asyncHandler from "../middlewares/asyncHandlerMiddleware";
 import { StatusCode } from "../enums/statusCode";
+import { pgNumber, responseError, responseSuccess } from "../utils";
 
 export const getUsers = asyncHandler(async (req: Request, res: Response) => {
-  const users = await User.query().paginate();
-  res.status(StatusCode.OK).json({
-    success: true,
-    data: users,
-  });
+  const { page, perPage } = pgNumber(Number(req?.query?.page));
+
+  const users = await User.query().paginate(page, perPage);
+
+  return responseSuccess(
+    res,
+    users,
+    "Users retrieved successfully",
+    StatusCode.OK
+  );
 });
 
 export const getUser = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const user = await User.query().find(id);
 
-  if (!user) {
-    res.status(404).json({
-      success: false,
-      message: "User not found",
-    });
-    return;
-  }
-
-  res.status(200).json({
-    success: true,
-    data: user,
-  });
+  return responseSuccess(
+    res,
+    user,
+    "User retrieved successfully",
+    StatusCode.OK
+  );
 });
 
 export const createUser = asyncHandler(
@@ -38,14 +38,8 @@ export const createUser = asyncHandler(
       req.body
     );
 
-    // throw new Error("Test");
     if (!success) {
-      res.status(400).json({
-        success: false,
-        message: "Invalid data",
-        errors,
-      });
-      return;
+      return responseError(res, "Invalid data", StatusCode.BAD_REQUEST, errors);
     }
 
     const { name, email, password } = data;
@@ -56,9 +50,11 @@ export const createUser = asyncHandler(
       password,
     });
 
-    res.status(201).json({
-      success: true,
-      data: user,
-    });
+    return responseSuccess(
+      res,
+      user,
+      "User created successfully",
+      StatusCode.CREATED
+    );
   }
 );

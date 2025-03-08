@@ -1,8 +1,6 @@
 import { sutando } from "sutando";
 import { env } from "../utils";
 
-console.log(env("DB_HOST", "127.0.0.1"), "test server");
-
 sutando.addConnection({
   client: "mysql2",
   connection: {

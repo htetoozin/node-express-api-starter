@@ -1,87 +1,101 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+var __awaiter =
+  (this && this.__awaiter) ||
+  function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+      return value instanceof P
+        ? value
+        : new P(function (resolve) {
+            resolve(value);
+          });
+    }
     return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+      function fulfilled(value) {
+        try {
+          step(generator.next(value));
+        } catch (e) {
+          reject(e);
+        }
+      }
+      function rejected(value) {
+        try {
+          step(generator["throw"](value));
+        } catch (e) {
+          reject(e);
+        }
+      }
+      function step(result) {
+        result.done
+          ? resolve(result.value)
+          : adopt(result.value).then(fulfilled, rejected);
+      }
+      step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+  };
+var __importDefault =
+  (this && this.__importDefault) ||
+  function (mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createUser = exports.getUser = exports.getUsers = void 0;
 const userModel_1 = __importDefault(require("../models/userModel"));
-const userValidation_1 = require("../validation/userValidation");
-const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const users = yield userModel_1.default.query().paginate();
-        res.status(200).json({
-            success: true,
-            data: users,
-        });
+const validatorMiddleware_1 = __importDefault(
+  require("../middlewares/validatorMiddleware")
+);
+const userValidator_1 = require("../validators/userValidator");
+const asyncHandlerMiddleware_1 = __importDefault(
+  require("../middlewares/asyncHandlerMiddleware")
+);
+const statusCode_1 = require("../enums/statusCode");
+const utils_1 = require("../utils");
+exports.getUsers = (0, asyncHandlerMiddleware_1.default)((req, res) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { page, perPage } = (0, utils_1.pgNumber)(
+      Number(
+        (_a = req === null || req === void 0 ? void 0 : req.query) === null ||
+          _a === void 0
+          ? void 0
+          : _a.page
+      )
+    );
+    const users = yield userModel_1.default.query().paginate(page, perPage);
+    return (0,
+    utils_1.responseSuccess)(res, users, "Users retrieved successfully", statusCode_1.StatusCode.OK);
+  })
+);
+exports.getUser = (0, asyncHandlerMiddleware_1.default)((req, res) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const user = yield userModel_1.default.query().find(id);
+    return (0,
+    utils_1.responseSuccess)(res, user, "User retrieved successfully", statusCode_1.StatusCode.OK);
+  })
+);
+exports.createUser = (0, asyncHandlerMiddleware_1.default)((req, res, next) =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const { success, data, errors } = yield (0, validatorMiddleware_1.default)(
+      userValidator_1.createUserValidator,
+      req.body
+    );
+
+    if (!success) {
+      return (0, utils_1.responseError)(
+        res,
+        "Invalid data",
+        statusCode_1.StatusCode.BAD_REQUEST,
+        errors
+      );
     }
-    catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error instanceof Error ? error.message : "Unknown error occurred",
-        });
-    }
-});
-exports.getUsers = getUsers;
-const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id } = req.params;
-        const user = yield userModel_1.default.query().find(id);
-        if (!user) {
-            res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
-            return;
-        }
-        res.status(200).json({
-            success: true,
-            data: user,
-        });
-    }
-    catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error instanceof Error ? error.message : "Unknown error occurred",
-        });
-    }
-});
-exports.getUser = getUser;
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const data = userValidation_1.createUserValidation.safeParse(req.body);
-        if (!data.success) {
-            res.status(400).json({
-                success: false,
-                message: "Invalid data",
-                errors: data.error.errors,
-            });
-            return;
-        }
-        const { name, email, password } = req.body;
-        const user = yield userModel_1.default.query().create({
-            name,
-            email,
-            password,
-        });
-        res.status(201).json({
-            success: true,
-            data: user,
-        });
-    }
-    catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error instanceof Error ? error.message : "Unknown error occurred",
-        });
-    }
-});
-exports.createUser = createUser;
+    throw new Error("test");
+    const { name, email, password } = data;
+    const user = yield userModel_1.default.query().create({
+      name,
+      email,
+      password,
+    });
+    return (0,
+    utils_1.responseSuccess)(res, user, "User created successfully", statusCode_1.StatusCode.CREATED);
+  })
+);
