@@ -1,54 +1,37 @@
-import { Request, Response } from "express";
+import { Request, Response, type NextFunction } from "express";
 import User from "../models/userModel";
 import validatorMiddleware from "../middlewares/validatorMiddleware";
 import { createUserValidator } from "../validators/userValidator";
+import asyncHandler from "../middlewares/asyncHandlerMiddleware";
 
-export const getUsers = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const users = await User.query().paginate();
+export const getUsers = asyncHandler(async (req: Request, res: Response) => {
+  const users = await User.query().paginate();
+  res.status(200).json({
+    success: true,
+    data: users,
+  });
+});
 
-    res.status(200).json({
-      success: true,
-      data: users,
-    });
-  } catch (error) {
-    res.status(500).json({
+export const getUser = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const user = await User.query().find(id);
+
+  if (!user) {
+    res.status(404).json({
       success: false,
-      message:
-        error instanceof Error ? error.message : "Unknown error occurred",
+      message: "User not found",
     });
+    return;
   }
-};
 
-export const getUser = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { id } = req.params;
-    const user = await User.query().find(id);
-    if (!user) {
-      res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-      return;
-    }
-    res.status(200).json({
-      success: true,
-      data: user,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Unknown error occurred",
-    });
-  }
-};
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+});
 
-export const createUser = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
+export const createUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { success, data, errors } = await validatorMiddleware(
       createUserValidator,
       req.body
@@ -70,15 +53,10 @@ export const createUser = async (
       email,
       password,
     });
+
     res.status(201).json({
       success: true,
       data: user,
     });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Unknown error occurred",
-    });
   }
-};
+);
