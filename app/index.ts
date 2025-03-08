@@ -6,6 +6,8 @@ import { db } from "./config/database";
 
 import apiRoute from "./routes/api";
 import welcomeRoute from "./routes/welcome";
+import errorHandler from "./exceptions/errorException";
+import notFoundException from "./exceptions/notFoundException";
 
 dotenv.config();
 
@@ -24,5 +26,9 @@ app.use(express.json());
 //Routes
 app.use("/api", apiRoute);
 app.use(welcomeRoute);
+
+//Error Handler
+app.all("*", notFoundException);
+app.use(errorHandler);
 
 export default app;

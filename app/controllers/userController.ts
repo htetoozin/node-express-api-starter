@@ -37,6 +37,7 @@ export const createUser = asyncHandler(
       req.body
     );
 
+    // throw new Error("Test");
     if (!success) {
       res.status(400).json({
         success: false,
