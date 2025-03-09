@@ -28,11 +28,7 @@ const responseSuccess = (res, data, message, code) => {
 exports.responseSuccess = responseSuccess;
 /** Response error */
 const responseError = (res, message, code, errors = null) => {
-    return res.status(code).json({
-        status: "error",
-        message,
-        errors,
-    });
+    return res.status(code).json(Object.assign({ status: "error", message }, (errors && { errors })));
 };
 exports.responseError = responseError;
 /** Pagination number */
