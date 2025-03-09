@@ -11,24 +11,14 @@ export const getUsers = asyncHandler(async (req: Request, res: Response) => {
 
   const users = await User.query().paginate(page, perPage);
 
-  return responseSuccess(
-    res,
-    users,
-    "Users retrieved successfully",
-    StatusCode.OK
-  );
+  responseSuccess(res, users, "Users retrieved successfully", StatusCode.OK);
 });
 
 export const getUser = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const user = await User.query().find(id);
 
-  return responseSuccess(
-    res,
-    user,
-    "User retrieved successfully",
-    StatusCode.OK
-  );
+  responseSuccess(res, user, "User retrieved successfully", StatusCode.OK);
 });
 
 export const createUser = asyncHandler(
@@ -39,7 +29,7 @@ export const createUser = asyncHandler(
     );
 
     if (!success) {
-      return responseError(res, "Invalid data", StatusCode.BAD_REQUEST, errors);
+      responseError(res, "Invalid data", StatusCode.BAD_REQUEST, errors);
     }
 
     const { name, email, password } = data;
@@ -50,11 +40,6 @@ export const createUser = asyncHandler(
       password,
     });
 
-    return responseSuccess(
-      res,
-      user,
-      "User created successfully",
-      StatusCode.CREATED
-    );
+    responseSuccess(res, user, "User created successfully", StatusCode.CREATED);
   }
 );

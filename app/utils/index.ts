@@ -26,7 +26,7 @@ export const responseSuccess = (
     };
   }
 
-  return res.status(code).json({
+  res.status(code).json({
     status: "success",
     message,
     data: responseData,
@@ -41,7 +41,7 @@ export const responseError = (
   code: number,
   errors: any = null
 ) => {
-  return res.status(code).json({
+  res.status(code).json({
     status: "error",
     message,
     ...(errors && { errors }),
