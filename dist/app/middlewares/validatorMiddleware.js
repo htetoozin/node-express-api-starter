@@ -10,19 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const validator = (rule, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield rule.safeParse(payload);
-    if (!result.success) {
-        const errors = result.error.errors.map((err) => ({
+    const { success, data, error } = yield rule.safeParseAsync(payload);
+    if (!success) {
+        const errors = error.errors.map((err) => ({
             [err.path[0]]: err.message,
         }));
-        return {
-            success: result.success,
-            errors,
-        };
+        return { success, errors };
     }
-    return {
-        success: result.success,
-        data: result.data,
-    };
+    return { success, data };
 });
 exports.default = validator;

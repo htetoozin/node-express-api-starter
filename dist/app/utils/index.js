@@ -23,12 +23,12 @@ const responseSuccess = (res, data, message, code) => {
             total_items: data._total,
         };
     }
-    return res.status(code).json(Object.assign({ status: "success", message, data: responseData }, (paginationData && { pagination: paginationData })));
+    res.status(code).json(Object.assign({ status: "success", message, data: responseData }, (paginationData && { pagination: paginationData })));
 };
 exports.responseSuccess = responseSuccess;
 /** Response error */
 const responseError = (res, message, code, errors = null) => {
-    return res.status(code).json(Object.assign({ status: "error", message }, (errors && { errors })));
+    res.status(code).json(Object.assign({ status: "error", message }, (errors && { errors })));
 };
 exports.responseError = responseError;
 /** Pagination number */

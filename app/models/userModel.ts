@@ -20,7 +20,7 @@ class User extends Model {
 
   static table = "users";
 
-  static fillable = ["name", "email", "role_id"];
+  static fillable = ["name", "email", "role_id", "password"];
 
   static dates = ["created_at", "updated_at"];
 }

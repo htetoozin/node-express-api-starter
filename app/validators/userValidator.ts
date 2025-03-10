@@ -1,10 +1,14 @@
 import z from "zod";
 import User from "../models/userModel";
 
+/**
+ * Create user validator
+ */
 export const createUserValidator = z
   .object({
     name: z.string({
-      invalid_type_error: "Name is required",
+      required_error: "Name is required",
+      invalid_type_error: "Name is a string",
     }),
     email: z
       .string({
@@ -25,7 +29,8 @@ export const createUserValidator = z
       }),
     password: z
       .string({
-        invalid_type_error: "Password is required",
+        required_error: "Password is required",
+        invalid_type_error: "Passowrd is a string",
       })
       .min(6, {
         message: "Password must be at least 6 characters",
@@ -39,4 +44,46 @@ export const createUserValidator = z
     path: ["password_confirmation"],
   });
 
+/**
+ * Update user validator
+ */
+export const updateUserValidator = (userId: number) =>
+  z.object({
+    name: z.string({
+      required_error: "Name is required",
+      invalid_type_error: "Name is a string",
+    }),
+    email: z
+      .string({
+        required_error: "Email is required",
+      })
+      .email({
+        message: "Invalid email format",
+      })
+      .superRefine(async (email, ctx) => {
+        const user = await User.query()
+          .where("id", userId)
+          .where("email", email)
+          .first();
+        if (!user) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Email is already taken by other user",
+            path: ["email"],
+          });
+        }
+      }),
+    role_id: z.number({
+      required_error: "Role ID is required",
+      invalid_type_error: "Role ID is an integer",
+    }),
+    password: z
+      .string()
+      .min(6, {
+        message: "Password must be at least 6 characters",
+      })
+      .nullable(),
+  });
+
 export type CreateUserInput = z.infer<typeof createUserValidator>;
+export type UpdateUserInput = z.infer<ReturnType<typeof updateUserValidator>>;
