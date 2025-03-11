@@ -29,7 +29,7 @@ export const responseSuccess = (
   res.status(code).json({
     status: "success",
     message,
-    data: responseData,
+    data: responseData || null,
     ...(paginationData && { pagination: paginationData }),
   });
 };

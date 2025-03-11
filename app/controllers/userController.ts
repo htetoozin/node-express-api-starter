@@ -86,3 +86,19 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
 
   responseSuccess(res, user, "User updated successfully", StatusCode.OK);
 });
+
+/**
+ * Delete the user.
+ */
+export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
+  const user = await User.query().findOrFail(req.params.id);
+
+  await user.delete();
+
+  responseSuccess(
+    res,
+    null,
+    "User deleted successfully",
+    StatusCode.NO_CONTENT
+  );
+});
