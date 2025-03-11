@@ -1,11 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import { responseError } from "../utils";
+import { StatusCode } from "../enums/statusCode";
 
 const notFoundException = (req: Request, res: Response, next: NextFunction) => {
-  res.status(404).json({
-    success: false,
-    status: "fail",
-    message: "route not found",
-  });
+  responseError(res, "Route not found", StatusCode.NOT_FOUND);
 };
 
 export default notFoundException;

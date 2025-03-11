@@ -13,24 +13,37 @@ import { pgNumber, responseError, responseSuccess } from "../utils";
  * Display a listing of the users with pagination.
  *
  */
-export const getUsers = asyncHandler(async (req: Request, res: Response) => {
-  const { page, perPage } = pgNumber(Number(req?.query?.page));
+export const getUsers = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { page, perPage } = pgNumber(Number(req?.query?.page));
 
-  const users = await User.query().paginate(page, perPage);
+    const users = await User.query().paginate(page, perPage);
 
-  responseSuccess(res, users, "Users retrieved successfully", StatusCode.OK);
-});
+    return responseSuccess(
+      res,
+      users,
+      "Users retrieved successfully",
+      StatusCode.OK
+    );
+  }
+);
 
 /**
  * Display the user resource.
  *
  */
-export const getUser = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const user = await User.query().find(id);
+export const getUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await User.query().findOrFail(req.params.id);
 
-  responseSuccess(res, user, "User retrieved successfully", StatusCode.OK);
-});
+    return responseSuccess(
+      res,
+      user,
+      "User retrieved successfully",
+      StatusCode.OK
+    );
+  }
+);
 
 /**
  * Create a new user.
@@ -44,7 +57,7 @@ export const createUser = asyncHandler(
     );
 
     if (!success) {
-      responseError(res, "Invalid data", StatusCode.BAD_REQUEST, errors);
+      return responseError(res, "Invalid data", StatusCode.BAD_REQUEST, errors);
     }
 
     const { name, email, password } = data;
@@ -55,7 +68,12 @@ export const createUser = asyncHandler(
       password,
     });
 
-    responseSuccess(res, user, "User created successfully", StatusCode.CREATED);
+    return responseSuccess(
+      res,
+      user,
+      "User created successfully",
+      StatusCode.CREATED
+    );
   }
 );
 
@@ -63,42 +81,51 @@ export const createUser = asyncHandler(
  * Update the user.
  *
  */
-export const updateUser = asyncHandler(async (req: Request, res: Response) => {
-  const user = await User.query().findOrFail(req.params.id);
+export const updateUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await User.query().findOrFail(req.params.id);
 
-  const { success, data, errors } = await validatorMiddleware(
-    updateUserValidator(Number(req.params.id)),
-    req.body
-  );
+    const { success, data, errors } = await validatorMiddleware(
+      updateUserValidator(Number(req.params.id)),
+      req.body
+    );
 
-  if (!success) {
-    responseError(res, "Invalid data", StatusCode.BAD_REQUEST, errors);
+    if (!success) {
+      return responseError(res, "Invalid data", StatusCode.BAD_REQUEST, errors);
+    }
+    const { name, email, password } = data;
+
+    User.query()
+      .where("id", user.id)
+      .update({
+        name,
+        email,
+        ...(password && { password }),
+      });
+
+    return responseSuccess(
+      res,
+      user,
+      "User updated successfully",
+      StatusCode.OK
+    );
   }
-  const { name, email, password } = data;
-
-  User.query()
-    .where("id", user.id)
-    .update({
-      name,
-      email,
-      ...(password && { password }),
-    });
-
-  responseSuccess(res, user, "User updated successfully", StatusCode.OK);
-});
+);
 
 /**
  * Delete the user.
  */
-export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
-  const user = await User.query().findOrFail(req.params.id);
+export const deleteUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await User.query().findOrFail(req.params.id);
 
-  await user.delete();
+    await user.delete();
 
-  responseSuccess(
-    res,
-    null,
-    "User deleted successfully",
-    StatusCode.NO_CONTENT
-  );
-});
+    return responseSuccess(
+      res,
+      null,
+      "User deleted successfully",
+      StatusCode.NO_CONTENT
+    );
+  }
+);

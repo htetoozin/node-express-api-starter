@@ -12,27 +12,23 @@ const errorHandler = (
   err.statusCode = err.statusCode || StatusCode.INTERNAL_SERVER_ERROR;
   err.status = err.status || "error";
 
-  if (err instanceof ModelNotFoundError && env("APP_ENV") === "development") {
+  if (err instanceof ModelNotFoundError) {
     next(
       responseError(
         res,
         `${err.getModel()} not found`,
         StatusCode.NOT_FOUND,
-        err.stack
+        env("APP_ENV") === "development" ? err.stack : null
       )
-    );
-  }
-
-  if (err instanceof ModelNotFoundError && env("APP_ENV") !== "development") {
-    next(
-      responseError(res, `${err.getModel()} not found`, StatusCode.NOT_FOUND)
     );
   }
 
   if (env("APP_ENV") === "development") {
     next(responseError(res, err.message, err.statusCode, err.stack));
   }
-  next(responseError(res, err.message, err.statusCode));
+
+  const message = "Internal server error";
+  next(responseError(res, message, StatusCode.INTERNAL_SERVER_ERROR));
 };
 
 export default errorHandler;

@@ -23,7 +23,7 @@ const responseSuccess = (res, data, message, code) => {
             total_items: data._total,
         };
     }
-    res.status(code).json(Object.assign({ status: "success", message, data: responseData }, (paginationData && { pagination: paginationData })));
+    res.status(code).json(Object.assign({ status: "success", message, data: responseData || null }, (paginationData && { pagination: paginationData })));
 };
 exports.responseSuccess = responseSuccess;
 /** Response error */

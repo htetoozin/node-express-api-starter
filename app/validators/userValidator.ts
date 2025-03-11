@@ -62,10 +62,11 @@ export const updateUserValidator = (userId: number) =>
       })
       .superRefine(async (email, ctx) => {
         const user = await User.query()
-          .where("id", userId)
+          .where("id", "!=", userId)
           .where("email", email)
           .first();
-        if (!user) {
+        console.log(user, "user");
+        if (user) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "Email is already taken by other user",

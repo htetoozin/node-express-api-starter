@@ -21,7 +21,8 @@ const userModel_1 = __importDefault(require("../models/userModel"));
 exports.createUserValidator = zod_1.default
     .object({
     name: zod_1.default.string({
-        invalid_type_error: "Name is required",
+        required_error: "Name is required",
+        invalid_type_error: "Name is a string",
     }),
     email: zod_1.default
         .string({
@@ -42,7 +43,8 @@ exports.createUserValidator = zod_1.default
     })),
     password: zod_1.default
         .string({
-        invalid_type_error: "Password is required",
+        required_error: "Password is required",
+        invalid_type_error: "Passowrd is a string",
     })
         .min(6, {
         message: "Password must be at least 6 characters",
@@ -58,34 +60,41 @@ exports.createUserValidator = zod_1.default
 /**
  * Update user validator
  */
-exports.updateUserValidator = zod_1.default.object({
+const updateUserValidator = (userId) => zod_1.default.object({
     name: zod_1.default.string({
-        invalid_type_error: "Name is required",
+        required_error: "Name is required",
+        invalid_type_error: "Name is a string",
     }),
     email: zod_1.default
         .string({
-        invalid_type_error: "Email is required",
+        required_error: "Email is required",
     })
         .email({
         message: "Invalid email format",
     })
         .superRefine((email, ctx) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log(email, ctx.get("id"), "ctx email");
-        const user = yield userModel_1.default.query().where("email", email).first();
+        const user = yield userModel_1.default.query()
+            .where("id", "!=", userId)
+            .where("email", email)
+            .first();
+        console.log(user, "user");
         if (user) {
             ctx.addIssue({
                 code: zod_1.default.ZodIssueCode.custom,
-                message: "Email already exists",
+                message: "Email is already taken by other user",
                 path: ["email"],
             });
         }
     })),
+    role_id: zod_1.default.number({
+        required_error: "Role ID is required",
+        invalid_type_error: "Role ID is an integer",
+    }),
     password: zod_1.default
-        .string({
-        message: "Password is required",
-    })
+        .string()
         .min(6, {
         message: "Password must be at least 6 characters",
     })
-        .optional(),
+        .nullable(),
 });
+exports.updateUserValidator = updateUserValidator;
