@@ -1,4 +1,6 @@
-import { Model } from "sutando";
+import { Attribute, Model } from "sutando";
+import bcrypt from "bcrypt";
+// Remove unused import since HashSalt is not exported from bcrypt
 
 export interface UserType {
   id?: number;
@@ -23,6 +25,17 @@ class User extends Model {
   static fillable = ["name", "email", "role_id", "password"];
 
   static dates = ["created_at", "updated_at"];
+
+  hidden = ["password", "created_at", "updated_at"];
+
+  // salt = bcrypt.genSaltSync(12);
+
+  /** Events*/
+  attributePassword() {
+    return Attribute.make({
+      set: (value: string) => bcrypt.hashSync(value, 10),
+    });
+  }
 }
 
 export default User;
