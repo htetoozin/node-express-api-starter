@@ -1,4 +1,5 @@
 import { Request, Response, type NextFunction } from "express";
+import bcrypt from "bcrypt";
 import User from "../models/userModel";
 import validatorMiddleware from "../middlewares/validatorMiddleware";
 import {
@@ -95,12 +96,14 @@ export const updateUser = asyncHandler(
     }
     const { name, email, password } = data;
 
-    User.query()
+    await User.query()
       .where("id", user.id)
       .update({
         name,
         email,
-        ...(password && { password }),
+        ...(password && {
+          password: bcrypt.hashSync(password, 10),
+        }),
       });
 
     return responseSuccess(

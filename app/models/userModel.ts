@@ -28,9 +28,9 @@ class User extends Model {
 
   hidden = ["password", "created_at", "updated_at"];
 
-  // salt = bcrypt.genSaltSync(12);
-
-  /** Events*/
+  /**
+   * Store bcrypt hashing value password when user saving.
+   */
   attributePassword() {
     return Attribute.make({
       set: (value: string) => bcrypt.hashSync(value, 10),

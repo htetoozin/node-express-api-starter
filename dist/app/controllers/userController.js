@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.createUser = exports.getUser = exports.getUsers = void 0;
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const userModel_1 = __importDefault(require("../models/userModel"));
 const validatorMiddleware_1 = __importDefault(require("../middlewares/validatorMiddleware"));
 const userValidator_1 = require("../validators/userValidator");
@@ -65,10 +66,12 @@ exports.updateUser = (0, asyncHandlerMiddleware_1.default)((req, res, next) => _
         return (0, utils_1.responseError)(res, "Invalid data", statusCode_1.StatusCode.BAD_REQUEST, errors);
     }
     const { name, email, password } = data;
-    userModel_1.default.query()
+    yield userModel_1.default.query()
         .where("id", user.id)
         .update(Object.assign({ name,
-        email }, (password && { password })));
+        email }, (password && {
+        password: bcrypt_1.default.hashSync(password, 10),
+    })));
     return (0, utils_1.responseSuccess)(res, user, "User updated successfully", statusCode_1.StatusCode.OK);
 }));
 /**
