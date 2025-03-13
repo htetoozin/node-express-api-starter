@@ -1,6 +1,5 @@
 import { Attribute, Model } from "sutando";
 import bcrypt from "bcrypt";
-// Remove unused import since HashSalt is not exported from bcrypt
 
 export interface UserType {
   id?: number;
@@ -35,6 +34,13 @@ class User extends Model {
     return Attribute.make({
       set: (value: string) => bcrypt.hashSync(value, 10),
     });
+  }
+
+  /**
+   * Query Scopes
+   */
+  scopeFilter(query: any, filter: any) {
+    return filter.apply(query);
   }
 }
 

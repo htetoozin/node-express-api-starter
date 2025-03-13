@@ -8,6 +8,7 @@ import {
 } from "../validators/userValidator";
 import asyncHandler from "../middlewares/asyncHandlerMiddleware";
 import { StatusCode } from "../enums/statusCode";
+import UserFilter from "../filters/userFilter";
 import { pgNumber, responseError, responseSuccess } from "../utils";
 
 /**
@@ -18,7 +19,8 @@ export const getUsers = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { page, perPage } = pgNumber(Number(req?.query?.page));
 
-    const users = await User.query().paginate(page, perPage);
+    const filter = new UserFilter(req.query);
+    const users = await User.query().filter(filter).paginate(page, perPage);
 
     return responseSuccess(
       res,
