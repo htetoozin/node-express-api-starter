@@ -1,4 +1,5 @@
-const { Migration, sutando } = require("sutando");
+const { Migration } = require("sutando");
+const { Role } = require("../../../dist/app/enums/role");
 
 module.exports = class extends Migration {
   /**
@@ -10,8 +11,9 @@ module.exports = class extends Migration {
         table.increments("id");
         table.string("name");
         table.string("email").unique();
+        table.integer("role_id").default(Role.ADMIN);
+        table.string("path").nullable();
         table.string("password");
-        table.integer("role_id").default(1);
         table.timestamps();
       });
     }

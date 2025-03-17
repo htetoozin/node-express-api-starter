@@ -1,4 +1,4 @@
-import { Request, Response, type NextFunction } from "express";
+import { request, Request, Response, type NextFunction } from "express";
 import bcrypt from "bcrypt";
 import User from "../models/userModel";
 import validatorMiddleware from "../middlewares/validatorMiddleware";
@@ -9,7 +9,17 @@ import {
 import asyncHandler from "../middlewares/asyncHandlerMiddleware";
 import { StatusCode } from "../enums/statusCode";
 import UserFilter from "../filters/userFilter";
-import { pgNumber, responseError, responseSuccess } from "../utils";
+import { INVALID_DATA } from "../config/app";
+import {
+  basePath,
+  pathDelete,
+  pgNumber,
+  responseError,
+  responseSuccess,
+} from "../utils";
+import fs from "fs";
+import multer from "multer";
+import { getFile } from "../services/uploadService";
 
 /**
  * Display a listing of the users with pagination.
@@ -60,7 +70,7 @@ export const createUser = asyncHandler(
     );
 
     if (!success) {
-      return responseError(res, "Invalid data", StatusCode.BAD_REQUEST, errors);
+      return responseError(res, INVALID_DATA, StatusCode.BAD_REQUEST, errors);
     }
 
     const { name, email, password } = data;
@@ -94,7 +104,7 @@ export const updateUser = asyncHandler(
     );
 
     if (!success) {
-      return responseError(res, "Invalid data", StatusCode.BAD_REQUEST, errors);
+      return responseError(res, INVALID_DATA, StatusCode.BAD_REQUEST, errors);
     }
     const { name, email, password } = data;
 
@@ -132,5 +142,47 @@ export const deleteUser = asyncHandler(
       "User deleted successfully",
       StatusCode.NO_CONTENT
     );
+  }
+);
+
+const storage = multer.diskStorage({
+  destination: "./uploads/",
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({
+  storage: storage,
+}).single("image");
+
+export const uploadImage = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await User.query().findOrFail(req.params.id);
+
+    const folderPath = basePath("../../public/uploads");
+
+    await getFile("path", folderPath, req, res)
+      .then((image) => {
+        if (user?.path) {
+          const oldImagePath = basePath(`../../public/${user.path}`);
+
+          pathDelete(oldImagePath);
+        }
+        user.update({
+          path: image,
+        });
+        responseSuccess(
+          res,
+          user,
+          "User profile updated successfully",
+          StatusCode.OK
+        );
+      })
+      .catch((error) => {
+        responseError(res, INVALID_DATA, StatusCode.BAD_REQUEST, [
+          { path: error.path },
+        ]);
+      });
   }
 );

@@ -6,6 +6,7 @@ export interface UserType {
   name: string;
   email: string;
   role_id: number;
+  path?: string;
   password: string;
   created_at?: Date;
   updated_at?: Date;
@@ -16,12 +17,13 @@ class User extends Model {
   declare name: string;
   declare email: string;
   declare role_id: number;
+  declare path: string;
   declare created_at: Date;
   declare updated_at: Date;
 
   static table = "users";
 
-  static fillable = ["name", "email", "role_id", "password"];
+  static fillable = ["name", "email", "role_id", "path", "password"];
 
   static dates = ["created_at", "updated_at"];
 

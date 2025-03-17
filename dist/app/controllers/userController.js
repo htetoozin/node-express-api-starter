@@ -19,6 +19,7 @@ const validatorMiddleware_1 = __importDefault(require("../middlewares/validatorM
 const userValidator_1 = require("../validators/userValidator");
 const asyncHandlerMiddleware_1 = __importDefault(require("../middlewares/asyncHandlerMiddleware"));
 const statusCode_1 = require("../enums/statusCode");
+const userFilter_1 = __importDefault(require("../filters/userFilter"));
 const utils_1 = require("../utils");
 /**
  * Display a listing of the users with pagination.
@@ -27,7 +28,8 @@ const utils_1 = require("../utils");
 exports.getUsers = (0, asyncHandlerMiddleware_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const { page, perPage } = (0, utils_1.pgNumber)(Number((_a = req === null || req === void 0 ? void 0 : req.query) === null || _a === void 0 ? void 0 : _a.page));
-    const users = yield userModel_1.default.query().paginate(page, perPage);
+    const filter = new userFilter_1.default(req.query);
+    const users = yield userModel_1.default.query().filter(filter).paginate(page, perPage);
     return (0, utils_1.responseSuccess)(res, users, "Users retrieved successfully", statusCode_1.StatusCode.OK);
 }));
 /**

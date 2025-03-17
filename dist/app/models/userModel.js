@@ -9,18 +9,23 @@ class User extends sutando_1.Model {
     constructor() {
         super(...arguments);
         this.hidden = ["password", "created_at", "updated_at"];
-        this.SALT_ROUNDS = 10;
     }
     /**
      * Store bcrypt hashing value password when user saving.
      */
     attributePassword() {
         return sutando_1.Attribute.make({
-            set: (value) => bcrypt_1.default.hashSync(value, this.SALT_ROUNDS),
+            set: (value) => bcrypt_1.default.hashSync(value, 10),
         });
+    }
+    /**
+     * Query Scopes
+     */
+    scopeFilter(query, filter) {
+        return filter.apply(query);
     }
 }
 User.table = "users";
-User.fillable = ["name", "email", "role_id", "password"];
+User.fillable = ["name", "email", "role_id", "path", "password"];
 User.dates = ["created_at", "updated_at"];
 exports.default = User;
