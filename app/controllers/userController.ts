@@ -17,9 +17,7 @@ import {
   responseError,
   responseSuccess,
 } from "../utils";
-import fs from "fs";
-import multer from "multer";
-import { getFile } from "../services/uploadService";
+import { uploadFile, uploadS3File } from "../services/uploadService";
 
 /**
  * Display a listing of the users with pagination.
@@ -145,24 +143,20 @@ export const deleteUser = asyncHandler(
   }
 );
 
-const storage = multer.diskStorage({
-  destination: "./uploads/",
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
-const upload = multer({
-  storage: storage,
-}).single("image");
-
+/**
+ * Upload user profile image.
+ */
 export const uploadImage = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.query().findOrFail(req.params.id);
 
+    //local storage
     const folderPath = basePath("../../public/uploads");
 
-    await getFile("path", folderPath, req, res)
+    //s3 storage
+    // const folderPath = "development/uploads";  (You can change s3 folder path here )
+
+    await uploadFile("path", folderPath, req, res)
       .then((image) => {
         if (user?.path) {
           const oldImagePath = basePath(`../../public/${user.path}`);

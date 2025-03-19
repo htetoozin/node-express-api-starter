@@ -6,7 +6,7 @@ export interface UserType {
   name: string;
   email: string;
   role_id: number;
-  path?: string;
+  path: string;
   password: string;
   created_at?: Date;
   updated_at?: Date;
@@ -37,6 +37,8 @@ class User extends Model {
       set: (value: string) => bcrypt.hashSync(value, 10),
     });
   }
+
+  filterValues = ["name", "email"];
 
   /**
    * Query Scopes
