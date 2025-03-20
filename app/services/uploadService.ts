@@ -3,7 +3,7 @@ import multer from "multer";
 import multerS3 from "multer-s3";
 import { S3Client } from "@aws-sdk/client-s3";
 import path from "path";
-import { MB } from "../utils";
+import { publicPath, deletePath, MB } from "../utils";
 import { ACCEPTED_FILE_TYPES, MAX_FILE_SIZE } from "../config/app";
 import { s3 } from "../config/filesystem";
 
@@ -181,4 +181,12 @@ export const uploadS3File = (
       })
       .catch(reject);
   });
+};
+
+/**
+ * Delete file to public folder
+ * @param path
+ */
+export const deleteFile = (path: string): void => {
+  deletePath(publicPath(path));
 };

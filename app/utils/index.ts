@@ -65,13 +65,13 @@ export const MB = (value: number = 1) => {
   return 1024 * 1024 * value;
 };
 
-/** Get base path */
-export const basePath = (value: string) => {
-  return path.join(__dirname, value);
+/** Get public path */
+export const publicPath = (value: string) => {
+  return path.join(__dirname, `/public/${value}`);
 };
 
-/** Delete image path */
-export const pathDelete = (value: string): void => {
+/** Delete file path */
+export const deletePath = (value: string): void => {
   if (fs.existsSync(value)) {
     fs.unlinkSync(value);
   }
