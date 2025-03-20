@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import multer from "multer";
 import multerS3 from "multer-s3";
-import { S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import path from "path";
 import { publicPath, deletePath, MB } from "../utils";
 import { ACCEPTED_FILE_TYPES, MAX_FILE_SIZE } from "../config/app";
@@ -119,7 +119,7 @@ const uploadCallback = (
       } else if (!req.file) {
         return reject({ [name]: "Image is required" });
       }
-      return resolve(req.file?.filename);
+      return resolve(req.file);
     });
   });
 };
@@ -146,7 +146,8 @@ export const uploadFile = (
     }).single(name);
 
     uploadCallback(upload, name, req, res)
-      .then((imagePath) => {
+      .then((file) => {
+        const imagePath = (file as Express.Multer.File).filename;
         const uploadPath = path.split("public/").pop() || "uploads";
         resolve(`${uploadPath}/${imagePath}`);
       })
@@ -176,7 +177,8 @@ export const uploadS3File = (
     }).single(name);
 
     uploadCallback(upload, name, req, res)
-      .then((imagePath) => {
+      .then((file) => {
+        const imagePath = (file as Express.MulterS3.File).key;
         resolve(imagePath);
       })
       .catch(reject);
@@ -189,4 +191,34 @@ export const uploadS3File = (
  */
 export const deleteFile = (path: string): void => {
   deletePath(publicPath(path));
+};
+
+/**
+ * Delete file from s3
+ * @param path
+ */
+export const deleteS3File = async (path: string): Promise<void> => {
+  const s3Config = new S3Client({
+    credentials: {
+      accessKeyId: s3?.key || "",
+      secretAccessKey: s3.secret || "",
+    },
+    region: s3.region || "",
+    forcePathStyle: true,
+    maxAttempts: 3,
+    retryMode: "standard",
+    logger: console,
+  });
+
+  const params = {
+    Bucket: s3.bucket || "",
+    Key: path,
+  };
+
+  try {
+    const command = new DeleteObjectCommand(params);
+    await s3Config.send(command);
+  } catch (error) {
+    console.log(error, "error");
+  }
 };

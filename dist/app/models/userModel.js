@@ -9,6 +9,7 @@ class User extends sutando_1.Model {
     constructor() {
         super(...arguments);
         this.hidden = ["password", "created_at", "updated_at"];
+        this.filterValues = ["name", "email"];
     }
     /**
      * Store bcrypt hashing value password when user saving.

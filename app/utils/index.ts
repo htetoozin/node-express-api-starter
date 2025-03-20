@@ -67,7 +67,7 @@ export const MB = (value: number = 1) => {
 
 /** Get public path */
 export const publicPath = (value: string) => {
-  return path.join(__dirname, `/public/${value}`);
+  return path.join(__dirname, `../public/${value}`);
 };
 
 /** Delete file path */
@@ -75,4 +75,13 @@ export const deletePath = (value: string): void => {
   if (fs.existsSync(value)) {
     fs.unlinkSync(value);
   }
+};
+
+/** Get image path */
+export const imagePath = (path: string) => {
+  if (env("FILESYSTEM_DRIVER") === "s3") {
+    return `${env("AWS_REDIRECT_PATH")}/${path}`;
+  }
+
+  return `${env("APP_URL")}/${path}`;
 };

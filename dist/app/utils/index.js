@@ -3,8 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pgNumber = exports.responseError = exports.responseSuccess = exports.env = void 0;
+exports.imagePath = exports.deletePath = exports.publicPath = exports.MB = exports.pgNumber = exports.responseError = exports.responseSuccess = exports.env = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 dotenv_1.default.config();
 /** Get env variable with default value */
 const env = (name, value) => {
@@ -40,3 +42,28 @@ const pgNumber = (value = 1) => {
     };
 };
 exports.pgNumber = pgNumber;
+/** Convert byets to MB */
+const MB = (value = 1) => {
+    return 1024 * 1024 * value;
+};
+exports.MB = MB;
+/** Get public path */
+const publicPath = (value) => {
+    return path_1.default.join(__dirname, `../public/${value}`);
+};
+exports.publicPath = publicPath;
+/** Delete file path */
+const deletePath = (value) => {
+    if (fs_1.default.existsSync(value)) {
+        fs_1.default.unlinkSync(value);
+    }
+};
+exports.deletePath = deletePath;
+/** Get image path */
+const imagePath = (path) => {
+    if ((0, exports.env)("FILESYSTEM_DRIVER") === "s3") {
+        return `${(0, exports.env)("AWS_REDIRECT_PATH")}/${path}`;
+    }
+    return `${(0, exports.env)("APP_URL")}/${path}`;
+};
+exports.imagePath = imagePath;

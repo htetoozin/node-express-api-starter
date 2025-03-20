@@ -1,4 +1,4 @@
-import { request, Request, Response, type NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import User from "../models/userModel";
 import validatorMiddleware from "../middlewares/validatorMiddleware";
@@ -10,12 +10,14 @@ import asyncHandler from "../middlewares/asyncHandlerMiddleware";
 import { StatusCode } from "../enums/statusCode";
 import UserFilter from "../filters/userFilter";
 import { INVALID_DATA } from "../config/app";
-import { pgNumber, publicPath, responseError, responseSuccess } from "../utils";
 import {
-  deleteFile,
-  uploadFile,
-  uploadS3File,
-} from "../services/uploadService";
+  imagePath,
+  pgNumber,
+  publicPath,
+  responseError,
+  responseSuccess,
+} from "../utils";
+import { uploadFile, deleteFile } from "../services/uploadService";
 
 /**
  * Display a listing of the users with pagination.
@@ -153,24 +155,33 @@ export const uploadImage = asyncHandler(
 
     //s3 storage
     // const folderPath = "development/uploads";  (You can change s3 folder path here)
-
     await uploadFile("path", folderPath, req, res)
       .then((image) => {
         if (user?.path) {
           deleteFile(user.path);
         }
+
+        console.log(image, "image");
         user.update({
           path: image,
         });
-        responseSuccess(
+
+        const response = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          path: imagePath(image),
+        };
+
+        return responseSuccess(
           res,
-          user,
+          response,
           "User profile updated successfully",
           StatusCode.OK
         );
       })
       .catch((error) => {
-        responseError(res, INVALID_DATA, StatusCode.BAD_REQUEST, [
+        return responseError(res, INVALID_DATA, StatusCode.BAD_REQUEST, [
           { path: error.path },
         ]);
       });

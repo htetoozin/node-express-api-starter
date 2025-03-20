@@ -1,4 +1,5 @@
 import express, { Express } from "express";
+import path from "path";
 import dotenv from "dotenv";
 import morgan from "morgan";
 
@@ -21,6 +22,9 @@ if (process.env.APP_ENV === "development") {
 //Database connection
 db.connection();
 
+// Serve static files from the 'public' folder
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use(express.json());
 
 //Routes
@@ -28,7 +32,7 @@ app.use("/api", apiRoute);
 app.use(welcomeRoute);
 
 //Error Handler
-app.all("*", notFoundException);
+// app.all("*", notFoundException);
 app.use(errorHandler);
 
 export default app;
