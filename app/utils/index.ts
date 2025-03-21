@@ -20,12 +20,15 @@ export const responseSuccess = (
   let responseData = data;
   let paginationData = null;
 
-  if (data?._items) {
-    responseData = data._items.items;
+  if (data?.data?.items) {
+    const { data: dataItems, pagination } = data;
+
+    responseData = dataItems.items;
+
     paginationData = {
-      current_page: data._currentPage,
-      total_page: data._lastPage,
-      total_items: data._total,
+      current_page: pagination.currentPage,
+      total_page: pagination.totalPage,
+      total_items: pagination.totalItems,
     };
   }
 

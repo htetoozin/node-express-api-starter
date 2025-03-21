@@ -10,14 +10,11 @@ import asyncHandler from "../middlewares/asyncHandlerMiddleware";
 import { StatusCode } from "../enums/statusCode";
 import UserFilter from "../filters/userFilter";
 import { INVALID_DATA } from "../config/app";
-import {
-  imagePath,
-  pgNumber,
-  publicPath,
-  responseError,
-  responseSuccess,
-} from "../utils";
+import { pgNumber, publicPath, responseError, responseSuccess } from "../utils";
 import { uploadFile, deleteFile } from "../services/uploadService";
+import { userCollection } from "../resources/users/userCollection";
+import { userResource } from "../resources/users/userResource";
+import { Role } from "../enums/role";
 
 /**
  * Display a listing of the users with pagination.
@@ -26,13 +23,12 @@ import { uploadFile, deleteFile } from "../services/uploadService";
 export const getUsers = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { page, perPage } = pgNumber(Number(req?.query?.page));
-
     const filter = new UserFilter(req.query);
     const users = await User.query().filter(filter).paginate(page, perPage);
 
     return responseSuccess(
       res,
-      users,
+      userCollection(users),
       "Users retrieved successfully",
       StatusCode.OK
     );
@@ -49,7 +45,7 @@ export const getUser = asyncHandler(
 
     return responseSuccess(
       res,
-      user,
+      userResource(user),
       "User retrieved successfully",
       StatusCode.OK
     );
@@ -77,11 +73,12 @@ export const createUser = asyncHandler(
       name,
       email,
       password,
+      role_id: Role.ADMIN,
     });
 
     return responseSuccess(
       res,
-      user,
+      userResource(user),
       "User created successfully",
       StatusCode.CREATED
     );
@@ -118,7 +115,7 @@ export const updateUser = asyncHandler(
 
     return responseSuccess(
       res,
-      user,
+      userResource(user),
       "User updated successfully",
       StatusCode.OK
     );
@@ -161,21 +158,13 @@ export const uploadImage = asyncHandler(
           deleteFile(user.path);
         }
 
-        console.log(image, "image");
         user.update({
           path: image,
         });
 
-        const response = {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          path: imagePath(image),
-        };
-
         return responseSuccess(
           res,
-          response,
+          userResource(user),
           "User profile updated successfully",
           StatusCode.OK
         );

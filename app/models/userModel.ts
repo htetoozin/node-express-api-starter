@@ -38,8 +38,6 @@ class User extends Model {
     });
   }
 
-  filterValues = ["name", "email"];
-
   /**
    * Query Scopes
    */
