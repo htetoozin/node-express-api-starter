@@ -53,7 +53,7 @@ export const sendEmail = async (
     const transporter = nodemailer.createTransport({
       host: mail.host,
       port: mail.port,
-      secure: false,
+      secure: mail.secure, // true for 465, false for other ports
       auth: {
         user: mail.username,
         pass: mail.password,
