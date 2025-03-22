@@ -23,6 +23,10 @@ const userFilter_1 = __importDefault(require("../filters/userFilter"));
 const app_1 = require("../config/app");
 const utils_1 = require("../utils");
 const uploadService_1 = require("../services/uploadService");
+const userCollection_1 = require("../resources/users/userCollection");
+const userResource_1 = require("../resources/users/userResource");
+const role_1 = require("../enums/role");
+const emailService_1 = require("../services/emailService");
 /**
  * Display a listing of the users with pagination.
  *
@@ -32,7 +36,7 @@ exports.getUsers = (0, asyncHandlerMiddleware_1.default)((req, res, next) => __a
     const { page, perPage } = (0, utils_1.pgNumber)(Number((_a = req === null || req === void 0 ? void 0 : req.query) === null || _a === void 0 ? void 0 : _a.page));
     const filter = new userFilter_1.default(req.query);
     const users = yield userModel_1.default.query().filter(filter).paginate(page, perPage);
-    return (0, utils_1.responseSuccess)(res, users, "Users retrieved successfully", statusCode_1.StatusCode.OK);
+    return (0, utils_1.responseSuccess)(res, (0, userCollection_1.userCollection)(users), "Users retrieved successfully", statusCode_1.StatusCode.OK);
 }));
 /**
  * Display the user resource.
@@ -40,7 +44,7 @@ exports.getUsers = (0, asyncHandlerMiddleware_1.default)((req, res, next) => __a
  */
 exports.getUser = (0, asyncHandlerMiddleware_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield userModel_1.default.query().findOrFail(req.params.id);
-    return (0, utils_1.responseSuccess)(res, user, "User retrieved successfully", statusCode_1.StatusCode.OK);
+    return (0, utils_1.responseSuccess)(res, (0, userResource_1.userResource)(user), "User retrieved successfully", statusCode_1.StatusCode.OK);
 }));
 /**
  * Create a new user.
@@ -56,8 +60,10 @@ exports.createUser = (0, asyncHandlerMiddleware_1.default)((req, res, next) => _
         name,
         email,
         password,
+        role_id: role_1.Role.ADMIN,
     });
-    return (0, utils_1.responseSuccess)(res, user, "User created successfully", statusCode_1.StatusCode.CREATED);
+    (0, emailService_1.sendEmail)(email, "User Registration!", name);
+    return (0, utils_1.responseSuccess)(res, (0, userResource_1.userResource)(user), "User created successfully", statusCode_1.StatusCode.CREATED);
 }));
 /**
  * Update the user.
@@ -76,7 +82,7 @@ exports.updateUser = (0, asyncHandlerMiddleware_1.default)((req, res, next) => _
         email }, (password && {
         password: bcrypt_1.default.hashSync(password, 10),
     })));
-    return (0, utils_1.responseSuccess)(res, user, "User updated successfully", statusCode_1.StatusCode.OK);
+    return (0, utils_1.responseSuccess)(res, (0, userResource_1.userResource)(user), "User updated successfully", statusCode_1.StatusCode.OK);
 }));
 /**
  * Delete the user.
@@ -100,17 +106,10 @@ exports.uploadImage = (0, asyncHandlerMiddleware_1.default)((req, res, next) => 
         if (user === null || user === void 0 ? void 0 : user.path) {
             (0, uploadService_1.deleteFile)(user.path);
         }
-        console.log(image, "image");
         user.update({
             path: image,
         });
-        const response = {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            path: (0, utils_1.imagePath)(image),
-        };
-        return (0, utils_1.responseSuccess)(res, response, "User profile updated successfully", statusCode_1.StatusCode.OK);
+        return (0, utils_1.responseSuccess)(res, (0, userResource_1.userResource)(user), "User profile updated successfully", statusCode_1.StatusCode.OK);
     })
         .catch((error) => {
         return (0, utils_1.responseError)(res, app_1.INVALID_DATA, statusCode_1.StatusCode.BAD_REQUEST, [

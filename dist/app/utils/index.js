@@ -15,14 +15,16 @@ const env = (name, value) => {
 exports.env = env;
 /** Response success */
 const responseSuccess = (res, data, message, code) => {
+    var _a;
     let responseData = data;
     let paginationData = null;
-    if (data === null || data === void 0 ? void 0 : data._items) {
-        responseData = data._items.items;
+    if ((_a = data === null || data === void 0 ? void 0 : data.data) === null || _a === void 0 ? void 0 : _a.items) {
+        const { data: dataItems, pagination } = data;
+        responseData = dataItems.items;
         paginationData = {
-            current_page: data._currentPage,
-            total_page: data._lastPage,
-            total_items: data._total,
+            current_page: pagination.currentPage,
+            total_page: pagination.totalPage,
+            total_items: pagination.totalItems,
         };
     }
     res.status(code).json(Object.assign({ status: "success", message, data: responseData || null }, (paginationData && { pagination: paginationData })));

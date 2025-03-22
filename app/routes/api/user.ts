@@ -1,4 +1,4 @@
-import { response, Router } from "express";
+import { Router } from "express";
 import {
   createUser,
   getUser,
@@ -7,6 +7,7 @@ import {
   deleteUser,
   uploadImage,
 } from "../../controllers/userController";
+import { sendEmail } from "../../services/emailService";
 
 const router = Router();
 

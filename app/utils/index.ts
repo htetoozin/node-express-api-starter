@@ -6,7 +6,7 @@ import type { Response } from "express";
 dotenv.config();
 
 /** Get env variable with default value */
-export const env = (name: string, value?: string) => {
+export const env = (name: string, value?: any) => {
   return process.env[name] || value;
 };
 

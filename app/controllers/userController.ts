@@ -15,6 +15,7 @@ import { uploadFile, deleteFile } from "../services/uploadService";
 import { userCollection } from "../resources/users/userCollection";
 import { userResource } from "../resources/users/userResource";
 import { Role } from "../enums/role";
+import { sendEmail } from "../services/emailService";
 
 /**
  * Display a listing of the users with pagination.
@@ -75,6 +76,8 @@ export const createUser = asyncHandler(
       password,
       role_id: Role.ADMIN,
     });
+
+    sendEmail(email, "User Registration!", name);
 
     return responseSuccess(
       res,

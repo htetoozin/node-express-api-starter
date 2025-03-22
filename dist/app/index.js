@@ -19,11 +19,9 @@ if (process.env.APP_ENV === "development") {
 }
 //Database connection
 database_1.db.connection();
+//Serve static files from the 'public' folder
+app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
 app.use(express_1.default.json());
-//Set static folder
-const publicPath = path_1.default.join(__dirname, "../public");
-console.log(`Serving static files from: ${publicPath}`);
-app.use("/public", express_1.default.static(publicPath));
 //Routes
 app.use("/api", api_1.default);
 app.use(welcome_1.default);
