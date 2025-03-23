@@ -16,6 +16,7 @@ import { userCollection } from "../resources/users/userCollection";
 import { userResource } from "../resources/users/userResource";
 import { Role } from "../enums/role";
 import { sendEmail } from "../services/emailService";
+import { sendNoti } from "../services/notificationService";
 
 /**
  * Display a listing of the users with pagination.
@@ -177,5 +178,24 @@ export const uploadImage = asyncHandler(
           { path: error.path },
         ]);
       });
+  }
+);
+
+/**
+ * Send user notifcation.
+ */
+export const sendNotification = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await User.query().findOrFail(req.params.id);
+    const { title, description } = req.body;
+
+    sendNoti(title, description, [user.id.toString()]);
+
+    return responseSuccess(
+      res,
+      userResource(user),
+      "User notification sent successfully",
+      StatusCode.OK
+    );
   }
 );

@@ -6,8 +6,8 @@ import {
   updateUser,
   deleteUser,
   uploadImage,
+  sendNotification,
 } from "../../controllers/userController";
-import { sendNoti } from "../../services/notificationService";
 
 const router = Router();
 
@@ -17,12 +17,10 @@ router.post("/users", createUser);
 router.patch("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
 
+//upload image
 router.post("/users/:id/upload-image", uploadImage);
 
 //push notification
-router.post("/users/:id/send-notification", (req, res) => {
-  const { title, description } = req.body;
+router.post("/users/:id/send-notification", sendNotification);
 
-  sendNoti(title, description, [`${req.params.id}`]);
-});
 export default router;
