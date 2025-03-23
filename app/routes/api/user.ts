@@ -7,7 +7,7 @@ import {
   deleteUser,
   uploadImage,
 } from "../../controllers/userController";
-import { sendEmail } from "../../services/emailService";
+import { sendNoti } from "../../services/notificationService";
 
 const router = Router();
 
@@ -19,4 +19,10 @@ router.delete("/users/:id", deleteUser);
 
 router.post("/users/:id/upload-image", uploadImage);
 
+//push notification
+router.post("/users/:id/send-notification", (req, res) => {
+  const { title, description } = req.body;
+
+  sendNoti(title, description, [`${req.params.id}`]);
+});
 export default router;
