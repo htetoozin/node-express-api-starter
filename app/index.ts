@@ -32,7 +32,7 @@ app.use("/api", apiRoute);
 app.use(welcomeRoute);
 
 //Error Handler
-// app.all("*", notFoundException);
+app.all("*", notFoundException);
 app.use(errorHandler);
 
 export default app;
