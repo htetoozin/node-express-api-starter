@@ -1,7 +1,5 @@
 import z from "zod";
 import User from "../models/userModel";
-import { ACCEPTED_FILE_TYPES, MAX_FILE_SIZE } from "../config/app";
-import { MB } from "../utils";
 
 /**
  * Create user validator

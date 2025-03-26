@@ -18,6 +18,7 @@ class User extends Model {
   declare email: string;
   declare role_id: number;
   declare path: string;
+  declare password: string;
   declare created_at: Date;
   declare updated_at: Date;
 
@@ -34,6 +35,7 @@ class User extends Model {
    */
   attributePassword() {
     return Attribute.make({
+      get: (value: string) => value,
       set: (value: string) => bcrypt.hashSync(value, 10),
     });
   }

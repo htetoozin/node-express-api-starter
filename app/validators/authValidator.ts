@@ -1,9 +1,11 @@
 import z from "zod";
+import bcrypt from "bcrypt";
 import User from "../models/userModel";
+
 /**
  * Create user register validator
  */
-export const createRegisterValidator = z
+export const registerValidator = z
   .object({
     name: z.string({
       required_error: "Name is required",
@@ -43,5 +45,37 @@ export const createRegisterValidator = z
     path: ["password_confirmation"],
   });
 
-export type CreateUserInput = z.infer<typeof createRegisterValidator>;
-// export type UpdateUserInput = z.infer<ReturnType<typeof updateUserValidator>>;
+/**
+ * User login validator
+ */
+export const loginValidator = z
+  .object({
+    email: z
+      .string({
+        invalid_type_error: "Email is required",
+      })
+      .email({
+        message: "Invalid email format",
+      }),
+    password: z
+      .string({
+        required_error: "Password is required",
+        invalid_type_error: "Password is a string",
+      })
+      .min(6, {
+        message: "Password must be at least 6 characters",
+      }),
+  })
+  .superRefine(async (data, ctx) => {
+    const user = await User.query().where("email", data.email).first();
+    if (!user || !(await bcrypt.compare(data.password, user.password))) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Invalid credentials",
+        path: ["password"],
+      });
+    }
+  });
+
+export type CreateUserInput = z.infer<typeof registerValidator>;
+export type LoginInput = z.infer<typeof loginValidator>;
