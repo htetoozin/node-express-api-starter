@@ -1,16 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import validatorMiddleware from "../middlewares/validatorMiddleware";
-import { registerValidator, loginValidator } from "../validators/authValidator";
-import asyncHandler from "../middlewares/asyncHandlerMiddleware";
-import { responseError, responseSuccess } from "../utils";
-import { INVALID_DATA } from "../config/app";
-import { StatusCode } from "../enums/statusCode";
-import User from "../models/userModel";
-import { Role } from "../enums/role";
-import { sendEmail } from "../services/emailService";
-import { userResource } from "../resources/users/userResource";
-import { jwt as jwtConfig } from "../config/app";
+import validatorMiddleware from "../../middlewares/validatorMiddleware";
+import {
+  registerValidator,
+  loginValidator,
+} from "../../validators/auth/authValidator";
+import asyncHandler from "../../middlewares/asyncHandlerMiddleware";
+import { responseError, responseSuccess } from "../../utils";
+import { INVALID_DATA } from "../../config/app";
+import { StatusCode } from "../../enums/statusCode";
+import User from "../../models/userModel";
+import { Role } from "../../enums/role";
+import { sendEmail } from "../../services/emailService";
+import { userResource } from "../../resources/users/userResource";
+import { jwt as jwtConfig } from "../../config/app";
 
 /**
  * Create a new user

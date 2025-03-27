@@ -1,6 +1,6 @@
 import z from "zod";
 import bcrypt from "bcrypt";
-import User from "../models/userModel";
+import User from "../../models/userModel";
 
 /**
  * Create user register validator
@@ -68,7 +68,14 @@ export const loginValidator = z
   })
   .superRefine(async (data, ctx) => {
     const user = await User.query().where("email", data.email).first();
-    if (!user || !(await bcrypt.compare(data.password, user.password))) {
+    if (!user) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "User not found",
+        path: ["email"],
+      });
+    }
+    if (user && !(await bcrypt.compare(data.password, user.password))) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Invalid credentials",
@@ -77,5 +84,5 @@ export const loginValidator = z
     }
   });
 
-export type CreateUserInput = z.infer<typeof registerValidator>;
+export type RegisterInput = z.infer<typeof registerValidator>;
 export type LoginInput = z.infer<typeof loginValidator>;

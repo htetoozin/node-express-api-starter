@@ -88,3 +88,10 @@ export const imagePath = (path: string) => {
 
   return `${env("APP_URL")}/${path}`;
 };
+
+/** Random  */
+export const random = (length: number) => {
+  return Math.random()
+    .toString(36)
+    .substring(2, length + 2);
+};
