@@ -20,26 +20,21 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       tokenType: string;
     };
 
-    // const revalidate = await getToken(userId, tokenType, token);
-    // console.log(revalidate, "revalidate");
+    const revalidate = await getToken(userId, tokenType, token);
 
-    // if (revalidate) {
-    // }
-
-    // if (revalidate === false) {
-    //   responseError(res, "Token has expired", StatusCode.UNAUTHORIZED);
-    // }
+    if (!revalidate) {
+      return responseError(res, "Token not found", StatusCode.UNAUTHORIZED);
+    }
 
     (req as any).user = { userId, tokenType };
     next();
   } catch (error) {
-    console.log(error, "error");
     if (error instanceof jwt.TokenExpiredError) {
-      responseError(res, "Token has expired", StatusCode.UNAUTHORIZED);
+      return responseError(res, "Token has expired", StatusCode.UNAUTHORIZED);
     }
     if (error instanceof jwt.JsonWebTokenError) {
-      responseError(res, "Invalid token", StatusCode.UNAUTHORIZED);
+      return responseError(res, "Invalid token", StatusCode.UNAUTHORIZED);
     }
-    responseError(res, UNAUTHORIZED, StatusCode.UNAUTHORIZED);
+    return responseError(res, UNAUTHORIZED, StatusCode.UNAUTHORIZED);
   }
 };

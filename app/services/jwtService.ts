@@ -48,8 +48,8 @@ export const getToken = async (
   return (await db
     .table("jwt_access_token")
     .where("token_id", userId)
-    .where("token_type", token)
-    .where("token", tokenType)
+    .where("token_type", tokenType)
+    .where("token", token)
     .first())
     ? true
     : false;
