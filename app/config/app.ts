@@ -16,11 +16,16 @@ export const ACCEPTED_FILE_TYPES = ["jpeg", "jpg", "png"];
 export const INVALID_DATA = "Invalid Data";
 
 /**
- * JWT configuration
+ * 401 Unauthorized error default message
+ */
+export const UNAUTHORIZED = "Unauthorized";
+
+/**
+ * JWT credentials
  */
 export const jwt = {
   expire: env("JWT_EXPIRE_TIME", 18000), // 5 hours
-  key: env("JWT_KEY", "secret"),
+  secret: env("JWT_SECRET", "secret"),
 };
 
 /**

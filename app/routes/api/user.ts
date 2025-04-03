@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { auth } from "../../middlewares/authMiddleware";
 import {
   createUser,
   getUser,
@@ -11,7 +12,7 @@ import {
 
 const router = Router();
 
-router.get("/users", getUsers);
+router.get("/users", auth, getUsers);
 router.get("/users/:id", getUser);
 router.post("/users", createUser);
 router.patch("/users/:id", updateUser);

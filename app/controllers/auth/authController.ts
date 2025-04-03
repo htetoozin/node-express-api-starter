@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
 import validatorMiddleware from "../../middlewares/validatorMiddleware";
 import {
   registerValidator,
@@ -11,9 +10,9 @@ import { INVALID_DATA } from "../../config/app";
 import { StatusCode } from "../../enums/statusCode";
 import User from "../../models/userModel";
 import { Role } from "../../enums/role";
+import { createToken } from "../../services/jwtService";
 import { sendEmail } from "../../services/emailService";
 import { userResource } from "../../resources/users/userResource";
-import { jwt as jwtConfig } from "../../config/app";
 
 /**
  * Create a new user
@@ -66,9 +65,7 @@ export const login = asyncHandler(
     const user = await User.query().where("email", data.email).first();
 
     if (user) {
-      const token = jwt.sign({ userId: user.id }, jwtConfig.key, {
-        expiresIn: jwtConfig.expire,
-      });
+      const token = await createToken(user.id);
 
       const response = {
         user: userResource(user),
@@ -78,7 +75,7 @@ export const login = asyncHandler(
       return responseSuccess(
         res,
         response,
-        "User created successfully",
+        "User login successfully",
         StatusCode.OK
       );
     }
