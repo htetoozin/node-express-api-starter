@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import path from "path";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import cors from "cors";
 
 import { db } from "./config/database";
 
@@ -26,6 +27,12 @@ db.connection();
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: "http://example.com",
+  })
+);
 
 //Routes
 app.use("/api", apiRoute);

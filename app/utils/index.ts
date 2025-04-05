@@ -56,10 +56,9 @@ export const responseError = (
 
 /** Pagination number */
 export const pgNumber = (value: number = 1) => {
-  const perPage = 3;
   return {
     page: value,
-    perPage,
+    perPage: 10,
   };
 };
 

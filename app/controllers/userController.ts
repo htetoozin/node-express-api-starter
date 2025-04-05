@@ -26,7 +26,10 @@ export const getUsers = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { page, perPage } = pgNumber(Number(req?.query?.page));
     const filter = new UserFilter(req.query);
-    const users = await User.query().filter(filter).paginate(page, perPage);
+    const users = await User.query()
+      .filter(filter)
+      .latest()
+      .paginate(page, perPage);
 
     return responseSuccess(
       res,
