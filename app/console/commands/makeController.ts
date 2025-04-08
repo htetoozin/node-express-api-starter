@@ -23,7 +23,11 @@ if (fs.existsSync(filePath)) {
   process.exit(1);
 }
 
-const stub = getStub(stubPath, fileName);
+const modelName =
+  fileName.toLowerCase().replace("controller", "").charAt(0).toUpperCase() +
+  fileName.toLowerCase().replace("controller", "").slice(1);
+
+const stub = getStub(stubPath, modelName);
 
 fs.writeFileSync(filePath, stub);
 

@@ -4,3 +4,53 @@ import asyncHandler from "../middlewares/asyncHandlerMiddleware";
 import { StatusCode } from "../enums/statusCode";
 import { INVALID_DATA } from "../config/app";
 import { pgNumber, publicPath, responseError, responseSuccess } from "../utils";
+
+
+/**
+ * Display a listing of the {{name}}s.
+ *
+ */
+export const get{{name}}s = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    
+  }
+);
+
+/**
+ * Display the {{name}} resource.
+ *
+ */
+export const get{{name}} = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    
+  }
+);
+
+/**
+ * Create a new {{name}}.
+ *
+ */
+export const create{{name}} = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+   
+  }
+);
+
+/**
+ * Update the {{name}}.
+ *
+ */
+export const update{{name}} = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    
+  }
+);
+
+/**
+ * Delete the {{name}}.
+ */
+export const delete{{name}} = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+   
+  }
+);
