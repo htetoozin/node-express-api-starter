@@ -1,0 +1,10 @@
+import { metaPagination } from "./pagination";
+
+export const {{name}}Collection = (data: any) => {
+  return {
+    data: data.map((item: any) => ({
+      
+    })),
+    pagination: metaPagination(data),
+  };
+};
