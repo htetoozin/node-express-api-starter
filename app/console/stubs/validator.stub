@@ -1,0 +1,14 @@
+import z from "zod";
+
+/**
+ * {{name}} validator
+ */
+export const {{name}}Validator = z
+  .object({
+
+  })
+  
+
+
+
+export type {{name}}Input = z.infer<typeof {{name}}Validator>;

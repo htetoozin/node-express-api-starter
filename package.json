@@ -8,6 +8,7 @@
     "build": "tsc",
     "serve": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "make:validator": "ts-node app/console/commands/makeValidator.ts",
     "make:controller": "ts-node app/console/commands/makeController.ts",
     "make:seeder": "ts-node app/console/commands/seeds/makeSeeder.ts",
     "db:seed": "ts-node app/console/commands/seeds/seeder.ts"
