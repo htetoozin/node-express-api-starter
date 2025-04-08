@@ -16,14 +16,12 @@ const userSeeder = async () => {
       });
     }
 
-    console.log("✅ Successfully seeded 10 users");
+    console.log("🌱 Successfully seeded 10 users");
     process.exit(0);
   } catch (error) {
     console.error("❌ Seeding failed:", error);
     process.exit(1);
   }
 };
-
-userSeeder().catch(console.error);
 
 export default userSeeder;

@@ -1,0 +1,21 @@
+import { faker } from "@faker-js/faker";
+import { db } from "../../config/database";
+
+const {{name}} = async () => {
+  try {
+      await db.table("table_name").insert({
+        created_at: new Date(),
+        updated_at: new Date(),
+      });
+    
+
+    console.log("🌱 {{name}} Successfully seeded");
+    process.exit(0);
+  } catch (error) {
+    console.error("❌ Seeding failed:", error);
+    process.exit(1);
+  }
+};
+
+
+export default {{name}};

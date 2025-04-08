@@ -8,7 +8,8 @@
     "build": "tsc",
     "serve": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db:seed": "ts-node app/console/seeder.ts"
+    "make:seeder": "ts-node app/console/commands/seeds/makeSeeder.ts",
+    "db:seed": "ts-node app/console/commands/seeds/seeder.ts"
   },
   "keywords": [],
   "author": "",
