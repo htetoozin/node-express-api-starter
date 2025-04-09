@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.imagePath = exports.deletePath = exports.publicPath = exports.MB = exports.pgNumber = exports.responseError = exports.responseSuccess = exports.env = void 0;
+exports.random = exports.imagePath = exports.deletePath = exports.publicPath = exports.MB = exports.pgNumber = exports.responseError = exports.responseSuccess = exports.env = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
@@ -37,10 +37,9 @@ const responseError = (res, message, code, errors = null) => {
 exports.responseError = responseError;
 /** Pagination number */
 const pgNumber = (value = 1) => {
-    const perPage = 3;
     return {
         page: value,
-        perPage,
+        perPage: 10,
     };
 };
 exports.pgNumber = pgNumber;
@@ -69,3 +68,10 @@ const imagePath = (path) => {
     return `${(0, exports.env)("APP_URL")}/${path}`;
 };
 exports.imagePath = imagePath;
+/** Random  */
+const random = (length) => {
+    return Math.random()
+        .toString(36)
+        .substring(2, length + 2);
+};
+exports.random = random;

@@ -1,0 +1,24 @@
+import { Attribute, Model } from "sutando";
+
+export interface {{name}}Type {
+  id?: number;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+class {{name}} extends Model {
+  declare id: number;
+  declare created_at: Date;
+  declare updated_at: Date;
+
+  static table = "";
+
+  static fillable = [];
+
+  static dates = ["created_at", "updated_at"];
+
+  hidden = ["created_at", "updated_at"];
+
+}
+
+export default {{name}};

@@ -50,7 +50,7 @@ const sendEmail = (email_1, subject_1, ...args_1) => __awaiter(void 0, [email_1,
         const transporter = nodemailer_1.default.createTransport({
             host: mail_1.mail.host,
             port: mail_1.mail.port,
-            secure: false,
+            secure: mail_1.mail.secure,
             auth: {
                 user: mail_1.mail.username,
                 pass: mail_1.mail.password,

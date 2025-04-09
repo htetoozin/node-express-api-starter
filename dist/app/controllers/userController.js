@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadImage = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUser = exports.getUsers = void 0;
+exports.sendNotification = exports.uploadImage = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUser = exports.getUsers = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const userModel_1 = __importDefault(require("../models/userModel"));
 const validatorMiddleware_1 = __importDefault(require("../middlewares/validatorMiddleware"));
@@ -27,6 +27,7 @@ const userCollection_1 = require("../resources/users/userCollection");
 const userResource_1 = require("../resources/users/userResource");
 const role_1 = require("../enums/role");
 const emailService_1 = require("../services/emailService");
+const notificationService_1 = require("../services/notificationService");
 /**
  * Display a listing of the users with pagination.
  *
@@ -35,7 +36,10 @@ exports.getUsers = (0, asyncHandlerMiddleware_1.default)((req, res, next) => __a
     var _a;
     const { page, perPage } = (0, utils_1.pgNumber)(Number((_a = req === null || req === void 0 ? void 0 : req.query) === null || _a === void 0 ? void 0 : _a.page));
     const filter = new userFilter_1.default(req.query);
-    const users = yield userModel_1.default.query().filter(filter).paginate(page, perPage);
+    const users = yield userModel_1.default.query()
+        .filter(filter)
+        .latest()
+        .paginate(page, perPage);
     return (0, utils_1.responseSuccess)(res, (0, userCollection_1.userCollection)(users), "Users retrieved successfully", statusCode_1.StatusCode.OK);
 }));
 /**
@@ -116,4 +120,13 @@ exports.uploadImage = (0, asyncHandlerMiddleware_1.default)((req, res, next) => 
             { path: error.path },
         ]);
     });
+}));
+/**
+ * Send user notifcation.
+ */
+exports.sendNotification = (0, asyncHandlerMiddleware_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield userModel_1.default.query().findOrFail(req.params.id);
+    const { title, description } = req.body;
+    (0, notificationService_1.sendNoti)(title, description, [user.id.toString()]);
+    return (0, utils_1.responseSuccess)(res, (0, userResource_1.userResource)(user), "User notification sent successfully", statusCode_1.StatusCode.OK);
 }));

@@ -7,7 +7,6 @@ exports.metaPagination = void 0;
  * @return
  */
 const metaPagination = (data) => {
-    console.log(data._currentPage, "currentPage");
     return {
         currentPage: data._currentPage,
         totalPage: data._lastPage,

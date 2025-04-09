@@ -15,6 +15,7 @@ class User extends sutando_1.Model {
      */
     attributePassword() {
         return sutando_1.Attribute.make({
+            get: (value) => value,
             set: (value) => bcrypt_1.default.hashSync(value, 10),
         });
     }
