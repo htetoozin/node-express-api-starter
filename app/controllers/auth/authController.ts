@@ -10,7 +10,11 @@ import { INVALID_DATA } from "../../config/app";
 import { StatusCode } from "../../enums/statusCode";
 import User from "../../models/userModel";
 import { Role } from "../../enums/role";
-import { createToken } from "../../services/jwtService";
+import {
+  createToken,
+  destroyToken,
+  getVerifyToken,
+} from "../../services/jwtService";
 import { sendEmail } from "../../services/emailService";
 import { userResource } from "../../resources/users/userResource";
 
@@ -76,6 +80,30 @@ export const login = asyncHandler(
         res,
         response,
         "User login successfully",
+        StatusCode.OK
+      );
+    }
+  }
+);
+
+/**
+ * Logout a user
+ */
+export const logout = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const authHeader = req.headers.authorization;
+    console.log(authHeader, "auth header");
+
+    const token = authHeader?.split(" ")[1];
+    if (token) {
+      const { userId, tokenType } = await getVerifyToken(token);
+
+      await destroyToken(userId, tokenType, token);
+
+      return responseSuccess(
+        res,
+        null,
+        "User logout successfully",
         StatusCode.OK
       );
     }

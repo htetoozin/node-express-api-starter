@@ -54,3 +54,37 @@ export const getToken = async (
     ? true
     : false;
 };
+
+/**
+ * Get verify token
+ *
+ * @param token
+ * @returns
+ */
+export const getVerifyToken = async (
+  token: string
+): Promise<{ userId: number; tokenType: string }> => {
+  const { userId, tokenType } = jwt.verify(token, jwtConfig.secret) as {
+    userId: number;
+    tokenType: string;
+  };
+  return { userId, tokenType };
+};
+
+/**
+ * Destroy jwt token
+ * @param token
+ * @returns
+ */
+export const destroyToken = async (
+  userId: number,
+  tokenType: string = "User",
+  token: string
+) => {
+  await db
+    .table("jwt_access_token")
+    .where("token_id", userId)
+    .where("token_type", tokenType)
+    .where("token", token)
+    .delete();
+};
