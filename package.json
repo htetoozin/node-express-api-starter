@@ -10,6 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "make:collection": "ts-node app/console/commands/resources/makeCollection.ts",
     "make:resource": "ts-node app/console/commands/resources/makeResource.ts",
+    "make:filter": "ts-node app/console/commands/makeFilter.ts",
     "make:validator": "ts-node app/console/commands/makeValidator.ts",
     "make:model": "ts-node app/console/commands/makeModel.ts",
     "make:controller": "ts-node app/console/commands/makeController.ts",

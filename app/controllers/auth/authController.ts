@@ -92,7 +92,6 @@ export const login = asyncHandler(
 export const logout = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
-    console.log(authHeader, "auth header");
 
     const token = authHeader?.split(" ")[1];
     if (token) {

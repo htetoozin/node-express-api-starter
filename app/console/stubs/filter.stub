@@ -1,0 +1,18 @@
+import Filter from "./filter";
+
+class {{name}}Filter extends Filter {
+  /**
+   * Filter values
+   */
+  protected filterValues = ['keyword'];
+
+  /**
+   * Filter by keyword
+   */
+  keyword(value: string) {
+    return this.builder.where("name", "like", `%${value}%`);
+  }
+
+}
+
+export default {{name}}Filter;
