@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.register = void 0;
+exports.logout = exports.login = exports.register = void 0;
 const validatorMiddleware_1 = __importDefault(require("../../middlewares/validatorMiddleware"));
 const authValidator_1 = require("../../validators/auth/authValidator");
 const asyncHandlerMiddleware_1 = __importDefault(require("../../middlewares/asyncHandlerMiddleware"));
@@ -58,5 +58,17 @@ exports.login = (0, asyncHandlerMiddleware_1.default)((req, res, next) => __awai
             token,
         };
         return (0, utils_1.responseSuccess)(res, response, "User login successfully", statusCode_1.StatusCode.OK);
+    }
+}));
+/**
+ * Logout a user
+ */
+exports.logout = (0, asyncHandlerMiddleware_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const authHeader = req.headers.authorization;
+    const token = authHeader === null || authHeader === void 0 ? void 0 : authHeader.split(" ")[1];
+    if (token) {
+        const { userId, tokenType } = yield (0, jwtService_1.getVerifyToken)(token);
+        yield (0, jwtService_1.destroyToken)(userId, tokenType, token);
+        return (0, utils_1.responseSuccess)(res, null, "User logout successfully", statusCode_1.StatusCode.OK);
     }
 }));

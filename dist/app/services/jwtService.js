@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getToken = exports.createToken = void 0;
+exports.destroyToken = exports.getVerifyToken = exports.getToken = exports.createToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const database_1 = require("../config/database");
 const app_1 = require("../config/app");
@@ -59,3 +59,28 @@ const getToken = (userId_1, ...args_1) => __awaiter(void 0, [userId_1, ...args_1
         : false;
 });
 exports.getToken = getToken;
+/**
+ * Get verify token
+ *
+ * @param token
+ * @returns
+ */
+const getVerifyToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, tokenType } = jsonwebtoken_1.default.verify(token, app_1.jwt.secret);
+    return { userId, tokenType };
+});
+exports.getVerifyToken = getVerifyToken;
+/**
+ * Destroy jwt token
+ * @param token
+ * @returns
+ */
+const destroyToken = (userId_1, ...args_1) => __awaiter(void 0, [userId_1, ...args_1], void 0, function* (userId, tokenType = "User", token) {
+    yield database_1.db
+        .table("jwt_access_token")
+        .where("token_id", userId)
+        .where("token_type", tokenType)
+        .where("token", token)
+        .delete();
+});
+exports.destroyToken = destroyToken;
