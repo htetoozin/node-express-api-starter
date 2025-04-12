@@ -1,7 +1,7 @@
 # NodeJS Express TypeScript REST API Starter
 
 ## :rocket: Overview
-This is NodeJS Express TypeScript REST API Starter that is easy to use and customize. It uses NodeJS, Express, TypeScript, and MySQL with a Laravel inspired folder structure and command line system like `npm run make:controller`, `npm run make:model`, `npm run make:seeder` for rapid development. The starter kit includes features such as JWT Authentication, email notifications, file upload, and push notifications.
+This is NodeJS Express TypeScript REST API Starter that is easy to use and customize. It uses NodeJS, Express, TypeScript, and MySQL with a Laravel inspired folder structure and command line system like `npm run make:controller`, `npm run make:model`, `npm run make:seeder` for rapid development. The starter kit includes features such as JWT Authentication, email notifications, file upload, and push notifications. 
 
 ## :sparkles: Features
 
@@ -37,6 +37,9 @@ app/
 ├── utils/          # Helper functions
 └── validators/     # Input validation schemas
 ```
+
+## :wrench: Postman Collection
+You can import the Postman collection from the <a href="https://drive.google.com/file/d/1-Vr8de2-LYWe95yZrpRJ0hbHv1ik48gb/view?usp=sharing">`postman.json` </a>file.
 
 ## :inbox_tray: Getting Started
 
@@ -128,7 +131,7 @@ npm run db:seed userSeeder
 ## File Upload
 This project provides `local` and `s3 cloud` storage.
 
-## Local
+## Local Upload
 If you want to upload in local, file is stored in the `app/public` directory.
 ```
 FILESYSTEM_DRIVER=public
