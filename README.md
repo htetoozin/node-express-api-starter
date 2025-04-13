@@ -43,7 +43,8 @@ You can import the Postman collection from the <a href="https://drive.google.com
 
 ## :inbox_tray: Getting Started
 
-⚠️ Important: Node.js version must be ≥ v20.0.0
+### Prerequisites
+Node.js version must be ≥ v20.0.0
 
 ### Installation
 Clone the repository:
@@ -81,18 +82,18 @@ npm start
 ## :computer: Usage
 
 ### Create Validator
-If you want create validator, run `npm run make:validator` command line. After run this command, validator file is stored in the `app/validators/` directory.
+If you want to create validator, run `npm run make:validator` command line. After run this command, validator file is stored in the `app/validators/` directory.
 ```bash
 npm run make:validator userValidator
 ```
 
 ### Create Model
-If you want create model, run `npm run make:model` command line. After run this command, model file is stored in the `app/models/` directory.
+If you want to create model, run `npm run make:model` command line. After run this command, model file is stored in the `app/models/` directory.
 ```bash
 npm run make:model userModel
 ```
 ### Create Controller
-If you want create controller, run `npm run make:controller` command line. After run this command, controller file is stored in the `app/controllers/` directory.
+If you want to create controller, run `npm run make:controller` command line. After run this command, controller file is stored in the `app/controllers/` directory.
 ```bash
 npm run make:controller userController
 ```
@@ -103,14 +104,14 @@ npm run make:controller userController
 
 <a href="https://sutando.org/">Sutando<a> ORM use for database migrations.
 
-If you want create migration file, run `sutando migrate:make` command line. After run this command, migration file is stored in the `app/database/migrations` directory.
+If you want to create migration file, run `sutando migrate:make` command line. After run this command, migration file is stored in the `app/database/migrations` directory.
 
 Create the database migrations:
 ```bash
 sutando migrate:make create_users_table
 ```
 ### Running Migrations
-If you want to execute migration, run `sutando migrate:run` command line.
+If you want to to execute migration, run `sutando migrate:run` command line.
 ```bash
 sutando migrate:run
 ```
@@ -118,12 +119,12 @@ sutando migrate:run
 ## Database Seeding
 
 ### Create Seeder
-If you want create database seeder, run `npm run make:seeder` command line. After run this command, seeder file is stored in the `app/database/seeders` directory.
+If you want to create database seeder, run `npm run make:seeder` command line. After run this command, seeder file is stored in the `app/database/seeders` directory.
 ```bash
 npm run make:seeder userSeeder
 ```
 ### Running Seeders
-If you want to execute database seeder, run `npm run db:seed` command line
+If you want to to execute database seeder, run `npm run db:seed` command line
 ```bash
 npm run db:seed userSeeder
 ```
@@ -132,7 +133,7 @@ npm run db:seed userSeeder
 This project provides `local` and `s3 cloud` storage.
 
 ## Local Upload
-If you want to upload in local, file is stored in the `app/public` directory.
+If you want to to upload in local, file is stored in the `app/public` directory.
 ```
 FILESYSTEM_DRIVER=public
 ```
@@ -145,10 +146,10 @@ uploadFile("path", folderPath, req, res)
 
 #### Delete
 ```javascript
-deleteFile(user.path);
+deleteFile(path);
 ```
 ## S3 Upload
-If you want to upload in S3, file is stored in the s3 cloud. Add S3 credentials information in .env.
+If you want to to upload in S3, file is stored in the s3 cloud. Add S3 credentials information in .env.
 ```
 FILESYSTEM_DRIVER=s3
 
@@ -159,6 +160,27 @@ AWS_BUCKET=<aws-bucket>
 AWS_PREFIX=<aws-prefix>
 AWS_REDIRECT_PATH=<aws-redirect-path>
 ```
+Add bucket policy in AWS S3.
+```json
+{
+    "Version": "2025-04-12",
+    "Statement": [
+        {
+            "Sid": "PublicRead",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+                "s3:GetObjectVersion",
+                "s3:DeleteObject"
+            ],
+            "Resource": "arn:aws:s3:::bucket_name/*"
+        }
+    ]
+}
+```
 
 #### Upload 
 ```javascript
@@ -168,13 +190,13 @@ uploadS3File("path", folderPath, req, res)
 
 #### Delete
 ```javascript
-deleteS3File(user.path);
+deleteS3File(path);
 ```
 
 ### Create Filter
 Filter is used for searching.
 
-If you want create filter, run `npm run make:filter` command line. After run this command, filter file is stored in the `app/filters/` directory.
+If you want to create filter, run `npm run make:filter` command line. After run this command, filter file is stored in the `app/filters/` directory.
 ```bash
 npm run make:filer userFilter
 ```
@@ -228,7 +250,7 @@ const users = await User.query()
 
 API resource collection is used for listing or pagination. 
 
-If you want create resource collection, run `npm run make:collection` command line. After run this command, collection file is stored in the `app/resources/` directory.
+If you want to create resource collection, run `npm run make:collection` command line. After run this command, collection file is stored in the `app/resources/` directory.
 ```bash
 npm run make:collection userCollection
 ```
@@ -237,7 +259,7 @@ npm run make:collection userCollection
 
 API resource is used for single resource.
 
-If you want create resource, run `npm run make:resource` command line. After run this command, resource file is stored in the `app/resources/` directory.
+If you want to create resource, run `npm run make:resource` command line. After run this command, resource file is stored in the `app/resources/` directory.
 ```bash
 npm run make:resource userResource
 ```
